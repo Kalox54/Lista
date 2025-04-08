@@ -1,3 +1,6 @@
+/*2) (1 ponto) Um sistema de uma companhia aérea, deve armazenar dinamicamente as localizações dos seus aviões. 
+Para isso, utiliza-se uma lista encadeada, onde cada no da lista contém uma estrutura para armazenar: a altitude, 
+a latitude e a longitude. Permita incluir e mostrar onde cada aeronave está.*/
 #include <stdio.h>
 #include <stdlib.h>
 

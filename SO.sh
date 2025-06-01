@@ -37,10 +37,36 @@ while true; do
             rm -i "$arquivo"
             ;;
         5)
-            read -p "Digite o diretório/arquivo para backup: " origem
-            read -p "Digite o diretório de destino: " destino
-            tar -czvf "$destino/backup_$(date +%F_%H-%M-%S).tar.gz" "$origem"
-            echo "Backup criado com sucesso."
+                    5)
+            read -p "Digite o caminho do diretório/arquivo de ORIGEM para backup: " origem
+            read -p "Digite o diretório de DESTINO para o backup: " destino
+
+            # Verifica se o diretório de destino existe. Se não existir, tenta criá-lo.
+            if [ ! -d "$destino" ]; then
+                echo "Diretório de destino '$destino' não existe. Tentando criar..."
+                mkdir -p "$destino"
+                if [ $? -ne 0 ]; then
+                    echo "Erro: Não foi possível criar o diretório de destino '$destino'."
+                    read -p "Pressione Enter para continuar..."
+                    continue # Volta ao menu principal
+                fi
+            fi
+
+            # Constrói o nome do diretório de backup com a data e hora
+            nome_backup="backup_$(date +%F_%H-%M-%S)"
+            caminho_completo_destino="$destino/$nome_backup"
+
+            echo "Copiando '$origem' para '$caminho_completo_destino'..."
+
+            # Usa cp -r para copiar diretórios recursivamente
+            cp -r "$origem" "$caminho_completo_destino"
+
+            if [ $? -eq 0 ]; then
+                echo "Backup de '$origem' para '$caminho_completo_destino' criado com sucesso."
+            else
+                echo "Erro: Falha ao criar o backup de '$origem'."
+            fi
+            read -p "Pressione Enter para continuar..."
             ;;
         6)
             echo "Informações do sistema:"

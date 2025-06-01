@@ -37,7 +37,7 @@ while true; do
             rm -i "$arquivo"
             ;;
         5)
-                    5)
+            
             read -p "Digite o caminho do diretório/arquivo de ORIGEM para backup: " origem
             read -p "Digite o diretório de DESTINO para o backup: " destino
 

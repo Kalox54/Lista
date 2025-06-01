@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# A estrutura de repetição 'while true' é utilizada para manter o menu em loop contínuo.
 while true; do
-    clear # O comando 'clear' limpa a tela.
+    clear
     echo "======= Menu do Sistema ======="
     echo "1) Adicionar novo usuário"
     echo "2) Remover usuário"
@@ -14,57 +13,49 @@ while true; do
     echo "8) Levantar conexão de rede"
     echo "9) Sair"
     echo "================================"
-    read -p "Escolha uma opção: " opcao # 'read' lê a entrada do teclado.
+    read -p "Escolha uma opção: " opcao
 
-    # A estrutura 'case' é usada para tomar decisões com base na opção escolhida.
     case $opcao in
-        1) # Adicionar novo usuário
+        1)
             read -p "Digite o nome do novo usuário: " usuario
-            # Este comando é uma funcionalidade padrão do Linux para adicionar usuários.
-            # O '&&' encadeia comandos, executando o segundo se o primeiro for bem-sucedido.
             sudo useradd -m -s /bin/bash "$usuario" && echo "Usuário $usuario adicionado."
             echo "Agora, defina a senha para o usuário $usuario:"
             sudo passwd "$usuario"
             read -p "Pressione Enter para continuar..."
             ;;
-        2) # Remover usuário
+        2)
             read -p "Digite o nome do usuário a ser removido: " usuario
             sudo userdel -r "$usuario" && echo "Usuário $usuario removido."
             read -p "Pressione Enter para continuar..."
             ;;
-        3) # Listar os usuários do sistema
+        3)
             echo "Usuários do sistema:"
-            # Usando 'cut -d: -f1 /etc/passwd' como no exemplo do curso.
             cut -d: -f1 /etc/passwd
             read -p "Pressione Enter para continuar..."
             ;;
-        4) # Remover um arquivo
+        4)
             read -p "Digite o caminho do arquivo a ser removido: " arquivo
-            # O comando 'rm' é utilizado para remover arquivos. O '-i' pede confirmação.
             rm -i "$arquivo"
             read -p "Pressione Enter para continuar..."
             ;;
-        5) # Fazer backup de arquivos (usando cp -r como substituição para tar/gzip do exercício original, dado o contexto de 'cp' no material)
+        5)
             read -p "Digite o diretório/arquivo de ORIGEM para backup: " origem
             read -p "Digite o diretório de DESTINO para o backup: " destino
 
-            # Verificação e criação do diretório de destino, conforme boas práticas.
-            if [ ! -d "$destino" ]; then # '-d' verifica se é um diretório
+            if [ ! -d "$destino" ]; then
                 echo "Diretório de destino '$destino' não existe. Tentando criar..."
                 mkdir -p "$destino"
-                if [ $? -ne 0 ]; then # '$?' verifica o código de retorno do último comando
+                if [ $? -ne 0 ]; then
                     echo "Erro: Não foi possível criar o diretório de destino '$destino'."
                     read -p "Pressione Enter para continuar..."
-                    continue # Volta ao menu principal
+                    continue
                 fi
             fi
 
-            # Constrói o nome do diretório de backup com a data e hora.
             nome_backup="backup_$(date +%F_%H-%M-%S)"
             caminho_completo_destino="$destino/$nome_backup"
 
             echo "Copiando '$origem' para '$caminho_completo_destino'..."
-            # O comando 'cp -r' é utilizado para copiar diretórios e subdiretórios.
             cp -r "$origem" "$caminho_completo_destino"
 
             if [ $? -eq 0 ]; then
@@ -74,32 +65,26 @@ while true; do
             fi
             read -p "Pressione Enter para continuar..."
             ;;
-        6) # Monitorar informações do sistema
+        6)
             echo "Informações do sistema:"
             echo "------------------------"
             echo "Tempo de atividade:"
-            # O comando 'uptime' mostra o tempo que o computador está ligado.
             uptime
             echo
             echo "Uso de disco:"
-            # O comando 'df -h' mostra o uso de disco.
             df -h
             echo
             echo "Memória:"
-            # O comando 'free -m' mostra o estado da memória.
             free -m
             echo
             echo "Processos ativos (primeiras 10 linhas):"
-            # O comando 'ps -e' lista todos os processos, e 'head -n 10' mostra as 10 primeiras linhas.
             ps -e | head -n 10
             echo
             read -p "Pressione Enter para continuar..."
             ;;
-        7) # Derrubar conexão de rede (Assumindo que o usuário saberá qual interface quer derrubar)
-            # Para simplificar e seguir a proposta de usar comandos do material, usaremos um placeholder ou uma detecção simples.
-            # A detecção de interface foi mantida para funcionalidade, mesmo não sendo explicitamente coberta nos exemplos de comandos básicos.
+        7)
             iface=$(ip -o link show | awk -F': ' '{print $2}' | grep -v lo | head -n 1)
-            if [ -n "$iface" ]; then # '-n' verifica se a string não está vazia.
+            if [ -n "$iface" ]; then
                 echo "Derrubando conexão da interface: $iface..."
                 sudo ip link set "$iface" down
                 if [ $? -eq 0 ]; then
@@ -112,7 +97,7 @@ while true; do
             fi
             sleep 2
             ;;
-        8) # Levantar conexão de rede
+        8)
             iface=$(ip -o link show | awk -F': ' '{print $2}' | grep -v lo | head -n 1)
             if [ -n "$iface" ]; then
                 echo "Levantando conexão da interface: $iface..."
@@ -127,13 +112,13 @@ while true; do
             fi
             sleep 2
             ;;
-        9) # Sair
+        9)
             echo "Saindo..."
-            break # 'break' sai do loop 'while'.
+            break
             ;;
-        *) # Opção inválida
+        *)
             echo "Opção inválida. Tente novamente."
-            sleep 2 # 'sleep' pausa a execução por alguns segundos.
+            sleep 2
             ;;
     esac
 done

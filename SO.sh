@@ -17,9 +17,11 @@ while true; do
 
     case $opcao in
         1)
-            read -p "Digite o nome do novo usuário: " usuario
+             read -p "Digite o nome do novo usuário: " usuario
             sudo useradd -m -s /bin/bash "$usuario" && echo "Usuário $usuario adicionado."
+            echo "Agora, defina a senha para o usuário $usuario:"
             sudo passwd "$usuario"
+            read -p "Pressione Enter para continuar..."
             ;;
         2)
             read -p "Digite o nome do usuário a ser removido: " usuario
@@ -76,5 +78,7 @@ while true; do
             ;;
     esac
 done
+
+
 
 chmod +x menu.sh
